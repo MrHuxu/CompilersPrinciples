@@ -17,15 +17,41 @@ char token[1000][20];
 char midstring[20];
 int count1;
 
-void getArray(int &m){
-    count1 = 0;
-    while(midstring[m] != ' '){
+void getFunction(int &m){
+    count1 = 0;    
+    while((msgget[m] >= 'A' && msgget[m] <= 'Z') || (msgget[m] >= 'a' && msgget[m] <= 'z') || (msgget[m] >= '0' && msgget[m] <= '9') ||msgget[m] == '_'){
         midstring[count1] = msgget[m];
         count1++;
         m++;
     }
 }
 
+void getInteger(int &m){
+    count1 = 0;    
+    while(msgget[m] >= '0' && msgget[m] <= '9'){
+        midstring[count1] = msgget[m];
+        count1++;
+        m++;
+    }
+}
+
+void getString(int &m){
+    count1 = 0;
+    while(msgget[m] != '"'){
+        midstring[count1] = msgget[m];
+        count1++;
+        m++;
+    }
+}
+
+void getKeyword(int &m){
+    count1 = 0;
+    while((msgget[m] >= 'a' && msgget[m] <= 'z') || (msgget[m] >= 'A' && msgget[m] <= 'Z') ||(msgget[m] >= '0' && msgget[m] <= '9') || msgget[m] == '_'){
+        midstring[count1] = msgget[m];
+        count1++;
+        m++;
+    }
+}
 int main(int argc, char** argv) {
     FILE *fp;
     fp = fopen("test.txt", "r");
@@ -46,7 +72,8 @@ int main(int argc, char** argv) {
             case '(':
             case ')':
             case ';':
-            case ',':{
+            case ',':
+            case '#':{
             syn[count] = msgget[j] - 20;
             token[count][0] = msgget[j];
             token[count][1] = '\0';
@@ -107,106 +134,106 @@ int main(int argc, char** argv) {
             }
             break;
         }
-//            case '_':{
-//            if(msgget[j - 1] = ' '){
-//                syn[count] = 17;
-//                getArray(j);
-//                for(int q = 0; q <= count -1; q++){
-//                    token[count][q] = midstring[q];
-//                }
-//                token[count][count1] = '\0';
-//                j--;
-//                count++;
-//            }
-//            break;
-//            }
-//            case '0'||'1'||'2'||'3'||'4'||'5'||'6'||'7'||'8'||'9':{
-//            if(msgget[j - 1] = ' '){
-//                syn[count] = 25;
-//                getArray(j);
-//                for(int q = 0; q <= count -1; q++){
-//                    token[count][q] = midstring[q];
-//                }
-//                token[count][count1] = '\0';
-//                j--;
-//                count++;
-//            }
-//            break;
-//        }
-//        else if((msgget[j] >= 'a' && msgget[j] <= 'z')||(msgget[j] >= 'A'&&msgget[j] <= 'Z')){
-//            getArray[j];
-//            if(syn[count - 1] == 10){
-//                syn[count] = 23;
-//                getArray(j);
-//                for(int q = 0; q <= count -1; q++){
-//                    token[count][q] = midstring[q];
-//                }
-//                token[count][count1] = '\0';
-//                j--;
-//                count++;
-//            }else{
-//                switch (midstring[0]){
-//                    case 'm':{
-//                        syn[count] = 0;
-//                        token[count] = "main";
-//                        j = j + 3;
-//                        break;
-//                    }case 'i':{
-//                        if(midstring[1] == 'f'){
-//                            syn[count] = 1;
-//                        token[count] = "if";
-//                        j++;
-//                        break;
-//                        }else{
-//                            syn[count] = 9;
-//                        token[count] = "int";
-//                        j = j + 2;
-//                        break;
-//                        }
-//                    }case 't':{
-//                        syn[count] = 2;
-//                        token[count] = "then";
-//                        j = j + 3;
-//                        break;
-//                    }case 'e':{
-//                        if(midstring[3] == 'e'){
-//                            syn[count] = 3;
-//                        token[count] = "else";
-//                        j = j + 3;
-//                        break;
-//                        }else{
-//                            syn[count] = 4;
-//                        token[count] = "elsif";
-//                        j = j + 4;
-//                        break;
-//                        }
-//                    }case 'd':{
-//                        syn[count] = 5;
-//                        token[count] = "do";
-//                        j++;
-//                        break;
-//                    }case 'w':{
-//                        syn[count] = 6;
-//                        token[count] = "while";
-//                        j = j + 4;
-//                        break;
-//                    }case 'r':{
-//                        syn[count] = 7;
-//                        token[count] = "return";
-//                        j = j + 5;
-//                        break;
-//                    }case 'b':{
-//                        syn[count] = 8;
-//                        token[count] = "break";
-//                        j = j + 4;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
+            case '_':{
+            if(msgget[j - 1] = ' '){
+                syn[count] = 17;
+                getFunction(j);
+                for(int q = 0; q <= count1 -1; q++){
+                    token[count][q] = midstring[q];
+                }
+                token[count][count1] = '\0';
+                count++;
+            }
+            break;
+            }
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':{
+            if(msgget[j - 1] = ' '){
+                syn[count] = 18;
+                getInteger(j);
+                for(int q = 0; q <= count1 -1; q++){
+                    token[count][q] = midstring[q];
+                }
+                token[count][count1] = '\0';
+                j--;
+                count++;
+            }
+            break;
+        }
+            case '"':{
+                syn[count] = 29;
+                token[count][0] = '"';
+                token[count][1] = '\0';
+                count++;
+                break;
+            }
     }
+        
+        if((msgget[j] >= 'A' && msgget[j] <= 'Z') || (msgget[j] >= 'a' && msgget[j] <= 'z')){
+                if(msgget[j - 1] == '"'){
+                    syn[count] = 19;
+                        getString(j);
+                        for(int q = 0; q <= count1 -1; q++){
+                        token[count][q] = midstring[q];
+                        }
+                        token[count][count1] = '\0';
+                        j--;
+                        count++;
+                }else{
+                    getKeyword(j);
+                    for(int q = 0; q <= count1 - 1; q++){
+                    token[count][q] = midstring[q];
+                }
+                token[count][count1] = '\0';
+                if(strcmp(token[count], "main")==0){
+                    syn[count] = 0;
+                        count++;
+                }else if(strcmp(token[count], "if") == 0){
+                    syn[count] = 1;
+                    count++;
+                } else if(strcmp(token[count], "then") == 0){
+                    syn[count] = 2;
+                    count++;
+                } else if(strcmp(token[count], "else") == 0){
+                    syn[count] = 3;
+                    count++;
+                } else if(strcmp(token[count], "elsif") == 0){
+                    syn[count] = 4;
+                    count++;
+                } else if(strcmp(token[count], "do") == 0){
+                    syn[count] = 5;
+                    count++;
+                } else if(strcmp(token[count], "while") == 0){
+                    syn[count] = 6;
+                    count++;
+                } else if(strcmp(token[count], "return") == 0){
+                    syn[count] = 7;
+                    count++;
+                } else if(strcmp(token[count], "break") == 0){
+                    syn[count] = 8;
+                    count++;
+                } else if(strcmp(token[count], "int") == 0){
+                    syn[count] = 9;
+                    count++;
+                } else if(strcmp(token[count], "char") == 0){
+                    syn[count] = 10;
+                    count++;
+                }else{
+                    syn[count] = 16;
+                    count++;
+                }
+                j--;
+                }
+            }
  }
-    cout << count << endl;
     for(int w = 0; w <= count - 1; w++){
         cout << "( " << syn[w] << " , " << token[w] << " )" << endl;
     }
