@@ -296,7 +296,6 @@ int main(int argc, char** argv) {
             }
         }
     }
-        
  }
     for(int w = 0; w <= count - 1; w++){
         cout << w << " ( " << syn[w] << " , " << token[w] << " , " << line[w] << " )" << endl;
