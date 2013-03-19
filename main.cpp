@@ -1,10 +1,3 @@
-/* 
- * File:   main.cpp
- * Author: huxu
- *
- * Created on 2013年3月15日, 下午11:16
- */
-
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -13,6 +6,7 @@
 using namespace std;
 char msgget[1000];
 int syn[1000];
+int line[1000];
 char token[1000][20];
 char midstring[20];
 int count1;
@@ -24,7 +18,7 @@ void getFunction(int &m){
         count1++;
         m++;
     }
-}
+}//Get the function-name
 
 void getInteger(int &m){
     count1 = 0;    
@@ -33,7 +27,7 @@ void getInteger(int &m){
         count1++;
         m++;
     }
-}
+}//Get the Integer
 
 void getString(int &m){
     count1 = 0;
@@ -42,7 +36,7 @@ void getString(int &m){
         count1++;
         m++;
     }
-}
+}//Get the string and character
 
 void getKeywordandID(int &m){
     count1 = 0;
@@ -51,7 +45,7 @@ void getKeywordandID(int &m){
         count1++;
         m++;
     }
-}
+}//Get the Keyword like "main" and ID like "num_1"
 
 void getNote(int &m){
     count1 = 0;
@@ -60,10 +54,11 @@ void getNote(int &m){
         count1++;
         m++;
     }
-}
+}//Get the extra note
 
 int main(int argc, char** argv) {
     FILE *fp;
+    int getLine = 1;
     fp = fopen("test.txt", "r");
     int i = 0;
     while((msgget[i] = fgetc(fp))!=EOF){
@@ -73,7 +68,11 @@ int main(int argc, char** argv) {
     
     int count = 0;
     for(int j = 0; j <= i - 1; j++){
-        switch (msgget[j]){
+        switch (msgget[j]){                     //Get the symbols lika '*' '(' etc.
+            case '\n':{
+                getLine++;
+                break;
+            }                                   //Get the current line number
             case '+':
             case '-':
             case '*':
@@ -86,6 +85,7 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 20;
             token[count][0] = msgget[j];
             token[count][1] = '\0';
+                line[count] = getLine;
             count++;
             break;
         }
@@ -94,6 +94,7 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 60;
             token[count][0] = msgget[j];
             token[count][i] = '\0';
+                line[count] = getLine;
             count++;
             break;
         }
@@ -102,6 +103,7 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 80;
             token[count][0] = msgget[j];
             token[count][i] = '\0';
+                line[count] = getLine;
             count++;
             break;      
         }
@@ -109,12 +111,14 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 10;
             token[count][0] = msgget[j];
             token[count][i] = '\0';
+                line[count] = getLine;
             count++;
             break;
         }
             case ':':{
             syn[count] = 11;
             strcpy(token[count], ":=");
+                line[count] = getLine;
             count++;
             j++;
             break;
@@ -122,6 +126,7 @@ int main(int argc, char** argv) {
             case '!':{
             syn[count] = 15;
             strcpy(token[count], "!=");
+                line[count] = getLine;
             count++;
             j++;
             break;
@@ -133,22 +138,22 @@ int main(int argc, char** argv) {
                 token[count][0] = msgget[j];
                 token[count][1] = '=';
                 token[count][2] = '\0';
-                count++;
                 j++;
             }else{
                 syn[count] = msgget[j] - 30;
                 token[count][0] = msgget[j];
                 token[count][1] = '\0';
-                count++;
             }
+                line[count] = getLine;
+                count++;
             break;
         }
             case '#':{
             syn[count] = 35;
             token[count][0] = '#';
             token[count][1] = '\0';
+                line[count] = getLine;
             count++;
-            j++;
             break;
         }
             case '_':{
@@ -159,6 +164,7 @@ int main(int argc, char** argv) {
                     token[count][q] = midstring[q];
                 }
                 token[count][count1] = '\0';
+                line[count] = getLine;
                 count++;
             }
             break;
@@ -180,6 +186,7 @@ int main(int argc, char** argv) {
                     token[count][q] = midstring[q];
                 }
                 token[count][count1] = '\0';
+                line[count] = getLine;
                 j--;
                 count++;
             }
@@ -189,6 +196,7 @@ int main(int argc, char** argv) {
                 syn[count] = 29;
                 token[count][0] = '"';
                 token[count][1] = '\0';
+                line[count] = getLine;
                 count++;
                 break;
             }
@@ -202,8 +210,9 @@ int main(int argc, char** argv) {
                         token[count][q] = midstring[q];
                         }
                         token[count][count1] = '\0';
+                line[count] = getLine;
                         j--;
-                        count++;
+                        count++;                //If the last char is #, here must be a char or string
                 }else if(msgget[j - 1] == '#'){
                     getNote(j);
                     syn[count] = 36;
@@ -211,14 +220,16 @@ int main(int argc, char** argv) {
                         token[count][q] = midstring[q];
                         }
                         token[count][count1] = '\0';
+                line[count] = getLine;
                         j--;
-                        count++;
+                        count++;                //If the last char is #, here must be a note
                 }else{
                     getKeywordandID(j);
                     for(int q = 0; q <= count1 - 1; q++){
                     token[count][q] = midstring[q];
                 }
                 token[count][count1] = '\0';
+                line[count] = getLine;
                 if(strcmp(token[count], "main")==0){
                     syn[count] = 0;
                         count++;
@@ -251,17 +262,16 @@ int main(int argc, char** argv) {
                     count++;
                 } else if(strcmp(token[count], "char") == 0){
                     syn[count] = 10;
-                    count++;
+                    count++;                      //Check the string if it is keyword
                 }else{
                     syn[count] = 16;
-                    count++;
+                    count++;                    //Ok, the string leaved must be the ID
                 }
                 j--;
                 }
             }
  }
     for(int w = 0; w <= count - 1; w++){
-        cout << "( " << syn[w] << " , " << token[w] << " )" << endl;
+        cout << "( " << syn[w] << " , " << token[w] << " , " << line[w] << " )" << endl;
     }
 }
-
