@@ -58,7 +58,7 @@ void getNote(int &m){
 
 int main(int argc, char** argv) {
     FILE *fp;
-    int getLine = 1;
+    int getNumofLine = 1;
     fp = fopen("test.txt", "r");
     int i = 0;
     while((msgget[i] = fgetc(fp))!=EOF){
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
     for(int j = 0; j <= i - 1; j++){
         switch (msgget[j]){                     //Get the symbols lika '*' '(' etc.
             case '\n':{
-                getLine++;
+                getNumofLine++;
                 break;
             }                                   //Get the current line number
             case '+':
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 20;
             token[count][0] = msgget[j];
             token[count][1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
             count++;
             break;
         }
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 60;
             token[count][0] = msgget[j];
             token[count][i] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
             count++;
             break;
         }
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 80;
             token[count][0] = msgget[j];
             token[count][i] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
             count++;
             break;      
         }
@@ -111,14 +111,14 @@ int main(int argc, char** argv) {
             syn[count] = msgget[j] - 10;
             token[count][0] = msgget[j];
             token[count][i] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
             count++;
             break;
         }
             case ':':{
             syn[count] = 11;
             strcpy(token[count], ":=");
-                line[count] = getLine;
+                line[count] = getNumofLine;
             count++;
             j++;
             break;
@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
             case '!':{
             syn[count] = 15;
             strcpy(token[count], "!=");
-                line[count] = getLine;
+                line[count] = getNumofLine;
             count++;
             j++;
             break;
@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
                 token[count][0] = msgget[j];
                 token[count][1] = '\0';
             }
-                line[count] = getLine;
+                line[count] = getNumofLine;
                 count++;
             break;
         }
@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
             syn[count] = 35;
             token[count][0] = '#';
             token[count][1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
             count++;
             break;
         }
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
                     token[count][q] = midstring[q];
                 }
                 token[count][count1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
                 count++;
             }
             break;
@@ -186,7 +186,7 @@ int main(int argc, char** argv) {
                     token[count][q] = midstring[q];
                 }
                 token[count][count1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
                 j--;
                 count++;
             }
@@ -196,7 +196,7 @@ int main(int argc, char** argv) {
                 syn[count] = 29;
                 token[count][0] = '"';
                 token[count][1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
                 count++;
                 break;
             }
@@ -210,7 +210,7 @@ int main(int argc, char** argv) {
                         token[count][q] = midstring[q];
                         }
                         token[count][count1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
                         j--;
                         count++;                //If the last char is #, here must be a char or string
                 }else if(msgget[j - 1] == '#'){
@@ -220,7 +220,7 @@ int main(int argc, char** argv) {
                         token[count][q] = midstring[q];
                         }
                         token[count][count1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
                         j--;
                         count++;                //If the last char is #, here must be a note
                 }else{
@@ -229,7 +229,7 @@ int main(int argc, char** argv) {
                     token[count][q] = midstring[q];
                 }
                 token[count][count1] = '\0';
-                line[count] = getLine;
+                line[count] = getNumofLine;
                 if(strcmp(token[count], "main")==0){
                     syn[count] = 0;
                         count++;
