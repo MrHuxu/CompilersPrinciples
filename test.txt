@@ -1,12 +1,12 @@
 int _cal(int a, int b){
 	int c := a + b;
-	return c;  ##
+	return c;  #This is note_1#
 }
 
 int main(){
 	int num_1 := 2;
 	int num_2 := 40;
-	char num_3 := "a";  ##
+	char num_3 := "a";  #This is note_2#
 
 	while(num_1 < num_2) do{
 		num_1 := num_1 + 2;

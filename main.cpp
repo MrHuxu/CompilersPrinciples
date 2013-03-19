@@ -44,7 +44,7 @@ void getString(int &m){
     }
 }
 
-void getKeyword(int &m){
+void getKeywordandID(int &m){
     count1 = 0;
     while((msgget[m] >= 'a' && msgget[m] <= 'z') || (msgget[m] >= 'A' && msgget[m] <= 'Z') ||(msgget[m] >= '0' && msgget[m] <= '9') || msgget[m] == '_'){
         midstring[count1] = msgget[m];
@@ -52,6 +52,16 @@ void getKeyword(int &m){
         m++;
     }
 }
+
+void getNote(int &m){
+    count1 = 0;
+    while(msgget[m] != '#'){
+        midstring[count1] = msgget[m];
+        count1++;
+        m++;
+    }
+}
+
 int main(int argc, char** argv) {
     FILE *fp;
     fp = fopen("test.txt", "r");
@@ -72,8 +82,7 @@ int main(int argc, char** argv) {
             case '(':
             case ')':
             case ';':
-            case ',':
-            case '#':{
+            case ',':{
             syn[count] = msgget[j] - 20;
             token[count][0] = msgget[j];
             token[count][1] = '\0';
@@ -111,7 +120,7 @@ int main(int argc, char** argv) {
             break;
         }
             case '!':{
-            syn[count] = 16;
+            syn[count] = 15;
             strcpy(token[count], "!=");
             count++;
             j++;
@@ -132,6 +141,14 @@ int main(int argc, char** argv) {
                 token[count][1] = '\0';
                 count++;
             }
+            break;
+        }
+            case '#':{
+            syn[count] = 35;
+            token[count][0] = '#';
+            token[count][1] = '\0';
+            count++;
+            j++;
             break;
         }
             case '_':{
@@ -187,8 +204,17 @@ int main(int argc, char** argv) {
                         token[count][count1] = '\0';
                         j--;
                         count++;
+                }else if(msgget[j - 1] == '#'){
+                    getNote(j);
+                    syn[count] = 36;
+                    for(int q = 0; q <= count1 -1; q++){
+                        token[count][q] = midstring[q];
+                        }
+                        token[count][count1] = '\0';
+                        j--;
+                        count++;
                 }else{
-                    getKeyword(j);
+                    getKeywordandID(j);
                     for(int q = 0; q <= count1 - 1; q++){
                     token[count][q] = midstring[q];
                 }
