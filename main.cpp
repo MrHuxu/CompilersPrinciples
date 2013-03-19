@@ -7,9 +7,10 @@ using namespace std;
 char msgget[1000];
 int syn[1000];
 int line[1000];
-char token[1000][20];
-char midstring[20];
-int count1;
+char token[1000][40];
+char midstring[40];
+int count1, count2;
+char ID[1000][40];
 
 void getFunction(int &m){
     count1 = 0;    
@@ -58,12 +59,13 @@ void getNote(int &m){
 
 int main(int argc, char** argv) {
     FILE *fp;
+    count2 = 0;
     int getNumofLine = 1;
     fp = fopen("test.txt", "r");
     int i = 0;
     while((msgget[i] = fgetc(fp))!=EOF){
         i++;
-    }//i is the length of the array, msgget[i] is the last character of this array
+    }//i is the length of the array, msgget[i - 1] is the last character of this array
     fclose(fp);
     
     int count = 0;
@@ -200,8 +202,7 @@ int main(int argc, char** argv) {
                 count++;
                 break;
             }
-    }
-        
+            default:{
         if((msgget[j] >= 'A' && msgget[j] <= 'Z') || (msgget[j] >= 'a' && msgget[j] <= 'z')){
                 if(msgget[j - 1] == '"'){
                     syn[count] = 19;
@@ -263,15 +264,41 @@ int main(int argc, char** argv) {
                 } else if(strcmp(token[count], "char") == 0){
                     syn[count] = 10;
                     count++;                      //Check the string if it is keyword
+                } else if(strcmp(token[count], "gets") == 0){
+                    syn[count] = 40;
+                    count++;
+                } else if(strcmp(token[count], "puts") == 0){
+                    syn[count] = 42;
+                    count++;                    //Check the string if it is keyword
                 }else{
+                    if(syn[count - 1] == 9 || syn[count - 1] == 10){
+                        strcpy(ID[count2], token[count]);
+                        count2++;
+                    }else{
+                        bool isDeclared = false;
+                        for(int e = 0; e <= count2 - 1; e++){
+                            if(strcmp(ID[e],token[count]) == 0)
+                                isDeclared = true;
+                        }
+                        if(isDeclared == false)
+                            strcpy(token[count],"Error! Undeclared ID!\0");
+                    }
                     syn[count] = 16;
                     count++;                    //Ok, the string leaved must be the ID
                 }
                 j--;
                 }
+            }else if(msgget[j] != ' ' && msgget[j] != '\t'){
+            syn[count] = 13;
+            strcpy(token[count],"Invalid Symbols!\0");
+            line[count] = getNumofLine;
+            count++;
             }
+        }
+    }
+        
  }
     for(int w = 0; w <= count - 1; w++){
-        cout << "( " << syn[w] << " , " << token[w] << " , " << line[w] << " )" << endl;
+        cout << w << " ( " << syn[w] << " , " << token[w] << " , " << line[w] << " )" << endl;
     }
 }
