@@ -3,64 +3,11 @@
 #include <fstream>
 #include <string>
 #include <cstring>
-using namespace std;
-char msgget[1000];
-int syn[1000];
-int line[1000];
-char token[1000][40];
-char midstring[40];
-int count1, count2;
-char ID[1000][40];
-
-void getFunction(int &m){
-    count1 = 0;    
-    while((msgget[m] >= 'A' && msgget[m] <= 'Z') || (msgget[m] >= 'a' && msgget[m] <= 'z') || (msgget[m] >= '0' && msgget[m] <= '9') ||msgget[m] == '_'){
-        midstring[count1] = msgget[m];
-        count1++;
-        m++;
-    }
-}//Get the function-name
-
-void getInteger(int &m){
-    count1 = 0;    
-    while(msgget[m] >= '0' && msgget[m] <= '9'){
-        midstring[count1] = msgget[m];
-        count1++;
-        m++;
-    }
-}//Get the Integer
-
-void getString(int &m){
-    count1 = 0;
-    while(msgget[m] != '"'){
-        midstring[count1] = msgget[m];
-        count1++;
-        m++;
-    }
-}//Get the string and character
-
-void getKeywordandID(int &m){
-    count1 = 0;
-    while((msgget[m] >= 'a' && msgget[m] <= 'z') || (msgget[m] >= 'A' && msgget[m] <= 'Z') ||(msgget[m] >= '0' && msgget[m] <= '9') || msgget[m] == '_'){
-        midstring[count1] = msgget[m];
-        count1++;
-        m++;
-    }
-}//Get the Keyword like "main" and ID like "num_1"
-
-void getNote(int &m){
-    count1 = 0;
-    while(msgget[m] != '#'){
-        midstring[count1] = msgget[m];
-        count1++;
-        m++;
-    }
-}//Get the extra note
+#include "getString.h"
+#include "declareID.h"
 
 int main(int argc, char** argv) {
     FILE *fp;
-    count2 = 0;
-    int getNumofLine = 1;
     fp = fopen("test.txt", "r");
     int i = 0;
     while((msgget[i] = fgetc(fp))!=EOF){
@@ -76,7 +23,6 @@ int main(int argc, char** argv) {
                 break;
             }                                   //Get the current line number
             case '+':
-            case '-':
             case '*':
             case '/':
             case '=':
@@ -90,7 +36,26 @@ int main(int argc, char** argv) {
                 line[count] = getNumofLine;
             count++;
             break;
-        }
+         }
+            case '-':{
+                if(syn[count - 1] == 16 || syn[count - 1] == 18){syn[count] = msgget[j] - 20;
+                token[count][0] = msgget[j];
+                token[count][1] = '\0';
+                syn[count] = msgget[j] - 20;
+                }else{
+                    getNegtive(j);
+                    for(int q = 0; q <= LenOfMid -1; q++){
+                    token[count][q] = midstring[q];
+                }
+                token[count][LenOfMid] = '\0';
+                syn[count] = 26;
+                j--;
+                }
+                line[count] = getNumofLine;
+                count++;
+                break;
+            }
+                
             case '[':
             case ']':{
             syn[count] = msgget[j] - 60;
@@ -118,7 +83,7 @@ int main(int argc, char** argv) {
             break;
         }
             case ':':{
-            syn[count] = 11;
+            syn[count] = 14;
             strcpy(token[count], ":=");
                 line[count] = getNumofLine;
             count++;
@@ -136,7 +101,7 @@ int main(int argc, char** argv) {
             case '<':
             case '>':{
             if(msgget[j + 1] == '='){
-                syn[count] = msgget[j] - 48;
+                syn[count] = msgget[j] - 20;
                 token[count][0] = msgget[j];
                 token[count][1] = '=';
                 token[count][2] = '\0';
@@ -159,14 +124,27 @@ int main(int argc, char** argv) {
             break;
         }
             case '_':{
-            if(msgget[j - 1] = ' '){
-                syn[count] = 17;
+            if(msgget[j - 1] == ' ' || msgget[j-1] == '(' ){
                 getFunction(j);
-                for(int q = 0; q <= count1 -1; q++){
+                for(int q = 0; q <= LenOfMid -1; q++){
                     token[count][q] = midstring[q];
                 }
-                token[count][count1] = '\0';
+                token[count][LenOfMid] = '\0';
+                if(syn[count - 1] == 9 || syn[count - 1] == 10 || syn[count - 1] == 11){
+                strcpy(ID[NumofSym], token[count]);
+                NumofSym++;
+                }else{
+                    isDeclared = false;
+                    for(int e = 0; e <= NumofSym - 1; e++){
+                            if(strcmp(ID[e],token[count]) == 0)
+                                isDeclared = true;
+                        }
+                        if(isDeclared == false)
+                            strcpy(token[count],"Error! Function Unfind!\0");
+                    }
+                syn[count] = 17;
                 line[count] = getNumofLine;
+                j--;
                 count++;
             }
             break;
@@ -181,13 +159,13 @@ int main(int argc, char** argv) {
             case '7':
             case '8':
             case '9':{
-            if(msgget[j - 1] = ' '){
+            if(msgget[j - 1] == ' '){
                 syn[count] = 18;
-                getInteger(j);
-                for(int q = 0; q <= count1 -1; q++){
+                getIntegerandDouble(j);
+                for(int q = 0; q <= LenOfMid -1; q++){
                     token[count][q] = midstring[q];
                 }
-                token[count][count1] = '\0';
+                token[count][LenOfMid] = '\0';
                 line[count] = getNumofLine;
                 j--;
                 count++;
@@ -206,77 +184,48 @@ int main(int argc, char** argv) {
         if((msgget[j] >= 'A' && msgget[j] <= 'Z') || (msgget[j] >= 'a' && msgget[j] <= 'z')){
                 if(msgget[j - 1] == '"'){
                     syn[count] = 19;
-                        getString(j);
-                        for(int q = 0; q <= count1 -1; q++){
+                        getChar(j);
+                        for(int q = 0; q <= LenOfMid -1; q++){
                         token[count][q] = midstring[q];
                         }
-                        token[count][count1] = '\0';
+                        token[count][LenOfMid] = '\0';
                 line[count] = getNumofLine;
                         j--;
                         count++;                //If the last char is #, here must be a char or string
                 }else if(msgget[j - 1] == '#'){
                     getNote(j);
                     syn[count] = 36;
-                    for(int q = 0; q <= count1 -1; q++){
+                    for(int q = 0; q <= LenOfMid -1; q++){
                         token[count][q] = midstring[q];
                         }
-                        token[count][count1] = '\0';
+                        token[count][LenOfMid] = '\0';
                 line[count] = getNumofLine;
                         j--;
                         count++;                //If the last char is #, here must be a note
                 }else{
                     getKeywordandID(j);
-                    for(int q = 0; q <= count1 - 1; q++){
+                    for(int q = 0; q <= LenOfMid - 1; q++){
                     token[count][q] = midstring[q];
                 }
-                token[count][count1] = '\0';
+                token[count][LenOfMid] = '\0';
                 line[count] = getNumofLine;
-                if(strcmp(token[count], "main")==0){
-                    syn[count] = 0;
-                        count++;
-                }else if(strcmp(token[count], "if") == 0){
-                    syn[count] = 1;
+                bool isKeyword = false;
+                int keyNum;
+                for(keyNum = 0; keyNum <= 13; keyNum++){
+                    if(strcmp(token[count], keyword[keyNum]) == 0){
+                        isKeyword = 1;
+                        break;
+                    }
+                }if(isKeyword){
+                    syn[count] = keyNum;
                     count++;
-                } else if(strcmp(token[count], "then") == 0){
-                    syn[count] = 2;
-                    count++;
-                } else if(strcmp(token[count], "else") == 0){
-                    syn[count] = 3;
-                    count++;
-                } else if(strcmp(token[count], "elsif") == 0){
-                    syn[count] = 4;
-                    count++;
-                } else if(strcmp(token[count], "do") == 0){
-                    syn[count] = 5;
-                    count++;
-                } else if(strcmp(token[count], "while") == 0){
-                    syn[count] = 6;
-                    count++;
-                } else if(strcmp(token[count], "return") == 0){
-                    syn[count] = 7;
-                    count++;
-                } else if(strcmp(token[count], "break") == 0){
-                    syn[count] = 8;
-                    count++;
-                } else if(strcmp(token[count], "int") == 0){
-                    syn[count] = 9;
-                    count++;
-                } else if(strcmp(token[count], "char") == 0){
-                    syn[count] = 10;
-                    count++;                      //Check the string if it is keyword
-                } else if(strcmp(token[count], "gets") == 0){
-                    syn[count] = 40;
-                    count++;
-                } else if(strcmp(token[count], "puts") == 0){
-                    syn[count] = 42;
-                    count++;                    //Check the string if it is keyword
                 }else{
-                    if(syn[count - 1] == 9 || syn[count - 1] == 10){
-                        strcpy(ID[count2], token[count]);
-                        count2++;
+                    if(syn[count - 1] == 9 || syn[count - 1] == 10 || syn[count - 1] == 11){
+                        strcpy(ID[NumofSym], token[count]);
+                        NumofSym++;
                     }else{
-                        bool isDeclared = false;
-                        for(int e = 0; e <= count2 - 1; e++){
+                        isDeclared = false;
+                        for(int e = 0; e <= NumofSym - 1; e++){
                             if(strcmp(ID[e],token[count]) == 0)
                                 isDeclared = true;
                         }
@@ -288,7 +237,7 @@ int main(int argc, char** argv) {
                 }
                 j--;
                 }
-            }else if(msgget[j] != ' ' && msgget[j] != '\t'){
+            }else if(msgget[j] != ' ' && msgget[j] != '.' && msgget[j] != '\t'){
             syn[count] = 13;
             strcpy(token[count],"Invalid Symbols!\0");
             line[count] = getNumofLine;

@@ -2,6 +2,7 @@ int num_1;
 int num_2;
 char char_1;
 int num_4;
+double num_6;
 
 int _cal(int a, int b){
 	int c := a + b;
@@ -11,13 +12,15 @@ int _cal(int a, int b){
 int main(){
 	num_1 := 2;
 	num_2 := 40;
+	num_1 := num_2 - num_1;
+	num_6 := -2.567;
 	char_1 := "a";  #This is note_2#
 	num_5 = 9;
 	num_4 = gets;
 	puts num_4;
 
 	if(num_1 > num_2) then{
-		char a = "study";
+		char d = "study";
 	}
 
 	while(num_1 < num_2) do{
