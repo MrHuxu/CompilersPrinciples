@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=LexAnalyzer
+PROJECTNAME=CompilersPrinciples
 
 # Active Configuration
 DEFAULTCONF=Debug

@@ -1,5 +1,5 @@
 /* 
- * File:   ID.h
+ * File:   declareID.h
  * Author: huxu
  *
  * Created on 2013年3月20日, 上午10:05
@@ -19,6 +19,7 @@ int NumofSym = 0;
 char ID[1000][40];
 bool isDeclared = false;
 int getNumofLine = 1;
+int count;
 char keyword[14][10] = {"main", "if", "then", "else", "elsif", "do", "while", "return", "break", "int", "char", "double", "gets", "puts"};
 
 #endif	/* ID_H */
